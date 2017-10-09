@@ -62,7 +62,8 @@ abstract class BaseAcceptanceTestCase extends \OxidEsales\TestingLibrary\Accepta
         "Timeout waiting for 'id=submitLogin'",
         "Timeout waiting for 'Bestellen ohne Registrierung'",
         "Timeout waiting for 'cancel_return'",
-        "Timeout waiting for '2 x Test product 1'"
+        "Timeout waiting for '2 x Test product 1'",
+        "Timeout waiting for 'id=confirmButtonTop'"
     ];
 
     /**
@@ -89,7 +90,9 @@ abstract class BaseAcceptanceTestCase extends \OxidEsales\TestingLibrary\Accepta
         'redirect_to_PP_failed_en'   => [['isTextPresent', 'Cart'],
                                          ['isElementPresent', 'paypalExpressCheckoutButton']],
         'not_logged_in_redirect_to_PP_failed_de'   => [['isTextPresent', 'Bestellen ohne Registrierung'],
-                                                       ['isElementPresent', 'paypalExpressCheckoutButton']]
+                                                       ['isElementPresent', 'paypalExpressCheckoutButton']],
+        'paypal_account_failure' => [['isTextPresent', 'process your payment using'],
+                                     ['isTextPresent', 'different payment method']]
     ];
 
     /**
