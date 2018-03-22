@@ -21,6 +21,23 @@
 namespace OxidEsales\PayPalModule\Controller;
 
 /**
+ * @param string $message
+ */
+function writeToPPLog($message)
+{
+    $time = microtime(true);
+    $micro = sprintf("%06d", ($time - floor($time)) * 1000000);
+    $date = new \DateTime(date('Y-m-d H:i:s.' . $micro, $time));
+    $timestamp = $date->format('d M H:i:s.u Y');
+
+    $message = "[$timestamp] " . $message . PHP_EOL;
+
+    $path =  OX_BASE_PATH . 'log' . DIRECTORY_SEPARATOR . 'PAYPAL_DEBUG_LOG.txt';
+    file_put_contents($path, $message, FILE_APPEND);
+}
+
+
+/**
  * PayPal Express Checkout dispatcher class
  */
 class ExpressCheckoutDispatcher extends \OxidEsales\PayPalModule\Controller\Dispatcher
@@ -133,6 +150,8 @@ class ExpressCheckoutDispatcher extends \OxidEsales\PayPalModule\Controller\Disp
 
         // extracting token and building redirect url
         $url = $this->getPayPalConfig()->getPayPalCommunicationUrl($result->getToken(), $this->userAction);
+
+        writeToPPLog($url);
 
         // redirecting to PayPal's login/registration page
         $this->getUtils()->redirect($url, false);
