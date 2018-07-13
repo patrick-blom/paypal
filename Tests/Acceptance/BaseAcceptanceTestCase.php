@@ -1038,27 +1038,15 @@ abstract class BaseAcceptanceTestCase extends \OxidEsales\TestingLibrary\Accepta
      *
      * @return Exception|AssertionFailedError
      */
-    protected function formException(Exception $exception)
+    protected function formException(\Exception $exception)
     {
         $exceptionClassName = get_class($exception);
 
-        if ($exception instanceof ExpectationFailedException) {
-            $exceptionClassName = get_class(new AssertionFailedError());
-        }
+        $this->logTestDebugMessage(__FILE__ . ' ' . __LINE__ . ' ' . $exceptionClassName);
+        $this->logTestDebugMessage(__FILE__ . ' ' . __LINE__ . ' ' . $exception->getMessage());
+        $this->logTestDebugMessage(__FILE__ . ' ' . __LINE__ . ' ' . $exception->getTraceAsString());
 
-        try {
-            $this->logTestDebugMessage(__FILE__ . ' ' . __LINE__ . ' ' . $exceptionClassName);
-            $this->logTestDebugMessage(__FILE__ . ' ' . __LINE__ . ' ' . $exception->getMessage());
-            $this->logTestDebugMessage(__FILE__ . ' ' . __LINE__ . ' ' . $exception->getTraceAsString());
-
-            $newException = new $exceptionClassName(
-                $this->formExceptionMessage($exception),
-                $exception->getCode()
-            );
-            return $newException;
-        } catch (Exception $e) {
-            return $exception;
-        }
+        return parent::formException($exception);
     }
 
 }
