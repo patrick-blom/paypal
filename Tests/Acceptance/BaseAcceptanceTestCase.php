@@ -1030,4 +1030,35 @@ abstract class BaseAcceptanceTestCase extends \OxidEsales\TestingLibrary\Accepta
 
         $this->loginToOldSandbox($loginMail, $loginPassword);
     }
+
+    /**
+     * Newly forms Exception according provided Exception object.
+     *
+     * @param Exception $exception
+     *
+     * @return Exception|AssertionFailedError
+     */
+    protected function formException(Exception $exception)
+    {
+        $exceptionClassName = get_class($exception);
+
+        if ($exception instanceof ExpectationFailedException) {
+            $exceptionClassName = get_class(new AssertionFailedError());
+        }
+
+        try {
+            $this->logTestDebugMessage(__FILE__ . ' ' . __LINE__ . ' ' . $exceptionClassName);
+            $this->logTestDebugMessage(__FILE__ . ' ' . __LINE__ . ' ' . $exception->getMessage());
+            $this->logTestDebugMessage(__FILE__ . ' ' . __LINE__ . ' ' . $exception->getTraceAsString());
+
+            $newException = new $exceptionClassName(
+                $this->formExceptionMessage($exception),
+                $exception->getCode()
+            );
+            return $newException;
+        } catch (Exception $e) {
+            return $exception;
+        }
+    }
+
 }
