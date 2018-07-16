@@ -28,13 +28,38 @@ namespace OxidEsales\PayPalModule\Tests\Acceptance;
  */
 class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
 {
+
+    public function testSomething()
+    {
+        $this->openShop();
+        $this->switchLanguage("Deutsch");
+        $this->searchFor("1001");
+        $this->clickAndWait(self::SELECTOR_ADD_TO_BASKET);
+        $this->openBasket("Deutsch");
+
+        $this->waitForElement("paypalExpressCheckoutButton");
+        $this->assertElementPresent("paypalExpressCheckoutButton");
+    }
+
+    public function testSameAgain()
+    {
+        $this->openShop();
+        $this->switchLanguage("Deutsch");
+        $this->searchFor("1001");
+        $this->clickAndWait(self::SELECTOR_ADD_TO_BASKET);
+        $this->openBasket("Deutsch");
+
+        $this->waitForElement("paypalExpressCheckoutButton");
+        $this->assertElementPresent("paypalExpressCheckoutButton");
+    }
+
     /**
      * testing paypal express button
      *
      * @group paypal_standalone
      * @group paypal_external
      */
-    public function testPayPalExpressForLoggedInUser()
+    public function _testPayPalExpressForLoggedInUser()
     {
         // Testing when user is logged in
         $this->openShop();
@@ -87,7 +112,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_standalone
      * @group paypal_external
      */
-    public function testPayPalExpressForNotLoggedInUser()
+    public function _testPayPalExpressForNotLoggedInUser()
     {
         $this->importSql(__DIR__ . '/testSql/assignPayPalToGermanyStandardShippingMethod.sql');
 
@@ -138,7 +163,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_standalone
      * @group paypal_external
      */
-    public function testPayPalShippingCostNotLoginUser()
+    public function _testPayPalShippingCostNotLoginUser()
     {
         // Change price for PayPal payment method
         $this->importSql(__DIR__ . '/testSql/vatOptions.sql');
@@ -249,7 +274,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_standalone
      * @group paypal_external
      */
-    public function testPayPalStockOneSale()
+    public function _testPayPalStockOneSale()
     {
         $this->importSql(__DIR__ . '/testSql/changeStock.sql');
 
@@ -311,7 +336,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_standalone
      * @group paypal_external
      */
-    public function testPayPalStockOneAutomatic()
+    public function _testPayPalStockOneAutomatic()
     {
         $this->importSql(__DIR__ . '/testSql/changeStock.sql');
 
@@ -387,7 +412,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_standalone
      * @group paypal_external*
      */
-    public function testPayPalStockSufficientAutomatic()
+    public function _testPayPalStockSufficientAutomatic()
     {
         $this->importSql(__DIR__ . '/testSql/changeStockTo100.sql');
 
@@ -463,7 +488,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_external
      *
      */
-    public function testPayPalExpressNettoMode()
+    public function _testPayPalExpressNettoMode()
     {
         // Activate the necessary options Neto mode
         $this->importSql(__DIR__ . '/testSql/NettoModeTurnOn_' . SHOP_EDITION . '.sql');
@@ -532,7 +557,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * Verify that we can log in to PayPal Sandbox, cancel and return to shop and then
      * can log in to Sandbox again.
      */
-    public function testPayPalLoginCancelLoginPay()
+    public function _testPayPalLoginCancelLoginPay()
     {
         $loginMail = $this->getLoginDataByName('sBuyerLogin');
         $loginPassword = $this->getLoginDataByName('sBuyerPassword');
@@ -553,7 +578,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_standalone
      * @group paypal_external
      */
-    public function testPayPalPaymentForGermany()
+    public function _testPayPalPaymentForGermany()
     {
         // Separate Germany from PayPal payment method and assign United States
         $this->importSql(__DIR__ . '/testSql/unasignCountryFromPayPal.sql');
@@ -712,7 +737,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_external
      * @group paypal_not_running_locally
      */
-    public function testPayPalPaymentForLoginUser()
+    public function _testPayPalPaymentForLoginUser()
     {
         $this->addToBasket('1001');
         $this->loginToShopFrontend();
@@ -789,7 +814,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_standalone
      * @group paypal_external
      */
-    public function testNoPayPalExpressInUserStepForLoggedInUser()
+    public function _testNoPayPalExpressInUserStepForLoggedInUser()
     {
         $this->openShop();
         $this->switchLanguage("Deutsch");
@@ -811,7 +836,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_standalone
      * @group paypal_external
      */
-    public function testPayPalExpressInUserStepForNotLoggedInUserCancel()
+    public function _testPayPalExpressInUserStepForNotLoggedInUserCancel()
     {
         $this->openShop();
         $this->switchLanguage("Deutsch");
@@ -838,7 +863,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_standalone
      * @group paypal_external
      */
-    public function testPayPalExpressInUserStepForNotLoggedInUserError()
+    public function _testPayPalExpressInUserStepForNotLoggedInUserError()
     {
         $this->callShopSC('oxConfig', null, null, [
             'sOEPayPalSandboxSignature' => [
@@ -873,7 +898,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_standalone
      * @group paypal_external
      */
-    public function testPayPalExpressInUserStepForNotLoggedInUserCannotPayWithPP()
+    public function _testPayPalExpressInUserStepForNotLoggedInUserCannotPayWithPP()
     {
         //NOTE: test runs locally when callback is not available.
         // On publicly available shop, we see the following message on PayPal side:
@@ -909,7 +934,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_external
      *
      */
-    public function testPayWithPayPalExpressInUserStepForNotLoggedInUserOk()
+    public function _testPayWithPayPalExpressInUserStepForNotLoggedInUserOk()
     {
         $this->importSql(__DIR__ . '/testSql/assignPayPalToGermanyStandardShippingMethod.sql');
 
