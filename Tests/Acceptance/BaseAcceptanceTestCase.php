@@ -203,6 +203,8 @@ abstract class BaseAcceptanceTestCase extends \OxidEsales\TestingLibrary\Accepta
                 $exception = new \PHPUnit_Framework_SkippedTestError($skipExplanation);
             } else {
                 $this->logTestDebugMessage(__FUNCTION__ . ' ' . get_class($exception) . ' ' . $message);
+                $this->logTestDebugMessage(__FILE__ . ' ' . __LINE__ . ' ' . $message);
+                $this->logTestDebugMessage(__FILE__ . ' ' . __LINE__ . ' ' . $exception->getTraceAsString());
             }
 
             self::$doStopMink = true;
