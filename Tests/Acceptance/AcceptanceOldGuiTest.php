@@ -39,6 +39,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
 
         $this->waitForElement("paypalExpressCheckoutButton");
         $this->assertElementPresent("paypalExpressCheckoutButton");
+        $this->clearCache();
     }
 
     public function testSameAgain()
