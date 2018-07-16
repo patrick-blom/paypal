@@ -29,7 +29,7 @@ namespace OxidEsales\PayPalModule\Tests\Acceptance;
 class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
 {
 
-    public function testSomething()
+    public function _testSomething()
     {
         $this->loginAdminForModule("Master Settings", "Core Settings");
         $this->clearCache();
@@ -47,7 +47,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
         $this->loginAdminForModule("Administer Orders", "Orders");
     }
 
-    public function testSameAgain()
+    public function _testSameAgain()
     {
         // Change price for PayPal payment method
         $this->importSql(__DIR__ . '/testSql/vatOptions.sql');
@@ -77,7 +77,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_standalone
      * @group paypal_external
      */
-    public function _testPayPalExpressForLoggedInUser()
+    public function testPayPalExpressForLoggedInUser()
     {
         // Testing when user is logged in
         $this->openShop();
@@ -130,7 +130,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_standalone
      * @group paypal_external
      */
-    public function _testPayPalExpressForNotLoggedInUser()
+    public function testPayPalExpressForNotLoggedInUser()
     {
         $this->importSql(__DIR__ . '/testSql/assignPayPalToGermanyStandardShippingMethod.sql');
 
@@ -181,7 +181,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_standalone
      * @group paypal_external
      */
-    public function _testPayPalShippingCostNotLoginUser()
+    public function testPayPalShippingCostNotLoginUser()
     {
         // Change price for PayPal payment method
         $this->importSql(__DIR__ . '/testSql/vatOptions.sql');
