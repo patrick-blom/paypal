@@ -31,6 +31,9 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
 
     public function testSomething()
     {
+        $this->loginAdminForModule("Master Settings", "Core Settings");
+        $this->clearCache();
+
         $this->openShop();
         $this->switchLanguage("Deutsch");
         $this->searchFor("1001");
@@ -39,21 +42,31 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
 
         $this->waitForElement("paypalExpressCheckoutButton");
         $this->assertElementPresent("paypalExpressCheckoutButton");
-        $this->clearCache();
 
+        $this->clearCache();
         $this->loginAdminForModule("Administer Orders", "Orders");
     }
 
     public function testSameAgain()
     {
-        $this->openShop();
-        $this->switchLanguage("Deutsch");
-        $this->searchFor("1001");
-        $this->clickAndWait(self::SELECTOR_ADD_TO_BASKET);
-        $this->openBasket("Deutsch");
+        // Change price for PayPal payment method
+        $this->importSql(__DIR__ . '/testSql/vatOptions.sql');
+        $this->importSql(__DIR__ . '/testSql/assignPayPalToGermanyStandardShippingMethod.sql');
 
-        $this->waitForElement("paypalExpressCheckoutButton");
-        $this->assertElementPresent("paypalExpressCheckoutButton");
+        // Go to admin and set on "Calculate default Shipping costs when User is not logged in yet "
+        $this->loginAdminForModule("Master Settings", "Core Settings");
+        $this->openTab("Settings");
+        $this->click("link=Other settings");
+        sleep(1);
+        $this->check("//input[@name='confbools[blCalculateDelCostIfNotLoggedIn]'and @value='true']");
+        $this->clickAndWait("save");
+
+        // Go to shop and add product
+        $this->clearCache();
+        $this->openShop();
+        $this->switchLanguage("English");
+        $this->searchFor("1003");
+        $this->clearCache();
 
         $this->loginAdminForModule("Administer Orders", "Orders");
     }
