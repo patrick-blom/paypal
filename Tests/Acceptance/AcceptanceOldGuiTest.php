@@ -40,6 +40,8 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
         $this->waitForElement("paypalExpressCheckoutButton");
         $this->assertElementPresent("paypalExpressCheckoutButton");
         $this->clearCache();
+
+        $this->loginAdminForModule("Administer Orders", "Orders");
     }
 
     public function testSameAgain()
@@ -52,6 +54,8 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
 
         $this->waitForElement("paypalExpressCheckoutButton");
         $this->assertElementPresent("paypalExpressCheckoutButton");
+
+        $this->loginAdminForModule("Administer Orders", "Orders");
     }
 
     /**
