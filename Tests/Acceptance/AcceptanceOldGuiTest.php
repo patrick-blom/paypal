@@ -130,7 +130,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_standalone
      * @group paypal_external
      */
-    public function testPayPalExpressForNotLoggedInUser()
+    public function _testPayPalExpressForNotLoggedInUser()
     {
         $this->importSql(__DIR__ . '/testSql/assignPayPalToGermanyStandardShippingMethod.sql');
 
