@@ -28,73 +28,13 @@ namespace OxidEsales\PayPalModule\Tests\Acceptance;
  */
 class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
 {
-
-    public function _testSomething()
-    {
-        $this->loginAdminForModule("Master Settings", "Core Settings");
-        $this->clearCache();
-
-        $this->openShop();
-        $this->switchLanguage("Deutsch");
-        $this->searchFor("1001");
-        $this->clickAndWait(self::SELECTOR_ADD_TO_BASKET);
-        $this->openBasket("Deutsch");
-
-        $this->waitForElement("paypalExpressCheckoutButton");
-        $this->assertElementPresent("paypalExpressCheckoutButton");
-
-        $this->clearCache();
-        $this->loginAdminForModule("Administer Orders", "Orders");
-    }
-
-    public function _testSameAgain()
-    {
-        // Change price for PayPal payment method
-        $this->importSql(__DIR__ . '/testSql/vatOptions.sql');
-        $this->importSql(__DIR__ . '/testSql/assignPayPalToGermanyStandardShippingMethod.sql');
-
-        // Go to admin and set on "Calculate default Shipping costs when User is not logged in yet "
-        $this->loginAdminForModule("Master Settings", "Core Settings");
-        $this->openTab("Settings");
-        $this->click("link=Other settings");
-        sleep(1);
-        $this->check("//input[@name='confbools[blCalculateDelCostIfNotLoggedIn]'and @value='true']");
-        $this->clickAndWait("save");
-
-        // Go to shop and add product
-        $this->clearCache();
-        $this->openShop();
-        $this->switchLanguage("English");
-        $this->searchFor("1003");
-        $this->clearCache();
-
-        $this->loginAdminForModule("Administer Orders", "Orders");
-    }
-
-    public function _testSomeMore()
-    {
-        // Testing when user is logged in
-        $this->openShop();
-        $this->switchLanguage("Deutsch");
-        $this->searchFor("1001");
-        $this->clickAndWait(self::SELECTOR_ADD_TO_BASKET);
-        $this->openBasket("Deutsch");
-
-        $this->waitForElement("paypalExpressCheckoutButton");
-        $this->assertElementPresent("paypalExpressCheckoutButton");
-        $this->loginInFrontend(self::LOGIN_USERNAME, self::LOGIN_USERPASS);
-        $this->waitForElement("paypalExpressCheckoutButton");
-
-        $this->loginAdminForModule("Administer Orders", "Orders");
-    }
-
     /**
      * testing paypal express button
      *
      * @group paypal_standalone
      * @group paypal_external
      */
-    public function _testPayPalExpressForLoggedInUser()
+    public function testPayPalExpressForLoggedInUser()
     {
         // Testing when user is logged in
         $this->openShop();
@@ -147,7 +87,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_standalone
      * @group paypal_external
      */
-    public function _testPayPalExpressForNotLoggedInUser()
+    public function testPayPalExpressForNotLoggedInUser()
     {
         $this->importSql(__DIR__ . '/testSql/assignPayPalToGermanyStandardShippingMethod.sql');
 
@@ -298,8 +238,6 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
         $this->assertElementPresent("//table[@id='order.info']/tbody/tr[2]/td[1]", "line with discount info is not displayed");
         $this->assertElementPresent("//table[@id='order.info']/tbody/tr[2]/td[2]", "line with discount info is not displayed");
         $this->assertEquals("PayPal", $this->getText("//table[4]/tbody/tr[1]/td[2]"), "Payment method not displayed in admin");
-
-        $this->markTestIncomplete('Change back when PP sandbox issues are fixed.');
         $this->assertEquals("Test S&H set", $this->getText("//table[4]/tbody/tr[2]/td[2]"), "Shipping method is not displayed in admin");
     }
 
