@@ -142,7 +142,6 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
     {
         // Change price for PayPal payment method
         $this->importSql(__DIR__ . '/testSql/vatOptions.sql');
-        $this->importSql(__DIR__ . '/testSql/assignPayPalToGermanyStandardShippingMethod.sql');
 
         // Go to admin and set on "Calculate default Shipping costs when User is not logged in yet "
         $this->loginAdminForModule("Master Settings", "Core Settings");
@@ -551,7 +550,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
      * @group paypal_standalone
      * @group paypal_external
      */
-    public function _testPayPalPaymentForGermany()
+    public function testPayPalPaymentForGermany()
     {
         // Separate Germany from PayPal payment method and assign United States
         $this->importSql(__DIR__ . '/testSql/unasignCountryFromPayPal.sql');
@@ -602,7 +601,7 @@ class AcceptanceOldGuiTest extends BaseAcceptanceTestCase
             'AMT' => '7.89',
             'ITEMAMT' => '0.99',
             'SHIPPINGAMT' => '6.90',
-            //'SHIPPINGCALCULATIONMODE' => 'Callback', //uncomment when PP fixed Sandbox issue with "User Selected Options Type Fields"
+            'SHIPPINGCALCULATIONMODE' => 'Callback',
             'ACK' => 'Success'];
         $this->assertLogData($assertRequest, $assertResponse);
 
