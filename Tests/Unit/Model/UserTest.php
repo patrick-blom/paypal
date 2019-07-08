@@ -137,6 +137,69 @@ class UserTest extends \OxidEsales\TestingLibrary\UnitTestCase
         $this->assertEquals('12', $user->oxuser__oxstreetnr->value);
     }
 
+    /**
+     * Test case for \OxidEsales\PayPalModule\Model\User::createPayPalUser()
+     * Creating user
+     */
+    public function testCreatePayPalUser_streetNumberEdge()
+    {
+        // streetnr in first position
+        $payPalData = $this->getPayPalData();
+        $payPalData['PAYMENTREQUEST_0_SHIPTOSTREET'] = 'testStreetName str.';
+        $payPalData['PAYMENTREQUEST_0_SHIPTOSTREET2'] = '12';
+        $details = new \OxidEsales\PayPalModule\Model\Response\ResponseGetExpressCheckoutDetails();
+        $details->setData($payPalData);
+        $this->addModuleObject(\OxidEsales\Eshop\Application\Model\Address::class, new \OxidEsales\PayPalModule\Model\Address());
+
+        $payPalUser = new \OxidEsales\PayPalModule\Model\User();
+        $payPalUser->createPayPalUser($details);
+        $user = new \OxidEsales\Eshop\Application\Model\User();
+        $user->load($payPalUser->getId());
+
+        $this->assertEquals('testStreetName str.', $user->oxuser__oxstreet->value);
+        $this->assertEquals('12', $user->oxuser__oxstreetnr->value);
+    }
+
+    /**
+     * Test case for \OxidEsales\PayPalModule\Model\User::createPayPalUser()
+     * Creating user
+     */
+    public function testCreatePayPalUser_withFallbackSalutation()
+    {
+        $this->getConfig()->setConfigParam('sOEPayPalECheckoutFallbackSal', 'MR');
+
+        $payPalData = $this->getPayPalData();
+        $payPalData['SALUTATION'] = '';
+
+        $details = new \OxidEsales\PayPalModule\Model\Response\ResponseGetExpressCheckoutDetails();
+        $details->setData($payPalData);
+        $this->addModuleObject(\OxidEsales\Eshop\Application\Model\Address::class, new \OxidEsales\PayPalModule\Model\Address());
+
+        $mockBuilder = $this->getMockBuilder(\OxidEsales\Eshop\Application\Model\User::class);
+        $mockBuilder->setMethods(['_setAutoGroups']);
+        $payPalUser = $mockBuilder->getMock();
+        $payPalUser->expects($this->once())->method('_setAutoGroups')->with($this->equalTo("8f241f11096877ac0.98748826"));
+        $payPalUser->createPayPalUser($details);
+        $userId = $payPalUser->getId();
+
+        $user = new \OxidEsales\Eshop\Application\Model\User();
+        $user->load($userId);
+
+        $this->assertEquals(1, $user->oxuser__oxactive->value);
+        $this->assertEquals('test@test.mail', $user->oxuser__oxusername->value);
+        $this->assertEquals('testFirstName', $user->oxuser__oxfname->value);
+        $this->assertEquals('testLastName', $user->oxuser__oxlname->value);
+        $this->assertEquals('testPhoneNum', $user->oxuser__oxfon->value);
+        $this->assertEquals('MR', $user->oxuser__oxsal->value);
+        $this->assertEquals('testBusiness', $user->oxuser__oxcompany->value);
+        $this->assertEquals('testStreetName str.', $user->oxuser__oxstreet->value);
+        $this->assertEquals('12', $user->oxuser__oxstreetnr->value);
+        $this->assertEquals('testCity', $user->oxuser__oxcity->value);
+        $this->assertEquals('testZip', $user->oxuser__oxzip->value);
+        $this->assertEquals('8f241f11096877ac0.98748826', $user->oxuser__oxcountryid->value);
+        $this->assertEquals('333', $user->oxuser__oxstateid->value);
+        $this->assertEquals('testCompany', $user->oxuser__oxaddinfo->value);
+    }
 
     /**
      * Test case for \OxidEsales\PayPalModule\Model\User::createPayPalUser()

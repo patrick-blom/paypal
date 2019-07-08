@@ -88,4 +88,10 @@ $aLang = array(
 
     'SHOP_MODULE_blOEPayPalECheckoutInMiniBasket'        => 'Express Checkout im Mini-Warenkorb anzeigen',
     'HELP_SHOP_MODULE_blOEPayPalECheckoutInMiniBasket'   => 'Ist PayPal Express aktiv, wird der PayPal Express-Button im Mini-Warenkorb angezeigt.',
+
+    'SHOP_MODULE_sOEPayPalECheckoutFallbackSal'          => 'PayPal Express Fallback Anrede',
+    'SHOP_MODULE_sOEPayPalECheckoutFallbackSal_MR'       => 'Herr',
+    'SHOP_MODULE_sOEPayPalECheckoutFallbackSal_MRS'      => 'Frau',
+    'HELP_SHOP_MODULE_sOEPayPalECheckoutFallbackSal'     => 'Sollte PayPal im Express Checkout keine Anrede zurück geben wird diese Anrede verwendet',
+
 );

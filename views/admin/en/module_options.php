@@ -89,4 +89,9 @@ $aLang = array(
 
     'SHOP_MODULE_blOEPayPalECheckoutInDetails'           => 'Show Express Checkout in the products detail page',
     'HELP_SHOP_MODULE_blOEPayPalECheckoutInDetails'      => 'If PayPal Express is enabled, the PayPal Express button will be displayed in the products detail page.',
+
+    'SHOP_MODULE_sOEPayPalECheckoutFallbackSal'          => 'PayPal Express fallback salutation',
+    'SHOP_MODULE_sOEPayPalECheckoutFallbackSal_MR'       => 'Mr.',
+    'SHOP_MODULE_sOEPayPalECheckoutFallbackSal_MRS'      => 'Mrs.',
+    'HELP_SHOP_MODULE_sOEPayPalECheckoutFallbackSal'     => 'If PayPal does not provide a salutation during the Express Checkout, this fallback will be used',
 );

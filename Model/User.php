@@ -190,6 +190,27 @@ class User extends User_parent
         $street = $this->splitShipToStreetPayPalUser($payPalData->getShipToStreet());
         $userData['oxstreet'] = $street['street'];
         $userData['oxstreetnr'] = $street['streetnr'];
+        $userData['oxaddinfo'] = $payPalData->getShipToStreet2();
+
+        // if no street number could be parsed from the street name PayPal maybe put it into the ship to street 2 field
+        if (empty($userData['oxstreetnr'])) {
+            $result = [];
+            $shipToStreet2 = $payPalData->getShipToStreet2();
+
+            // If there is a number in ship to street 2 this might be the street number
+            preg_match('/([\\d]+[\\D])/', $shipToStreet2, $result);
+
+            if (count($result) > 0) {
+                $userData['oxstreetnr'] = $shipToStreet2;
+                $userData['oxaddinfo'] = '';
+            } else {
+                /**
+                 * @var $exception \OxidEsales\Eshop\Core\Exception\StandardException
+                 */
+                $exception = oxNew(StandardException::class, 'OEPAYPAL_ERROR_USER_ADDRESS');
+                throw $exception;
+            }
+        }
 
         $userData['oxcity'] = $payPalData->getShipToCity();
 
@@ -206,8 +227,13 @@ class User extends User_parent
 
         $userData['oxzip'] = $payPalData->getShipToZip();
         $userData['oxfon'] = $payPalData->getShipToPhoneNumber();
-        $userData['oxaddinfo'] = $payPalData->getShipToStreet2();
         $userData['oxsal'] = $payPalData->getSalutation();
+
+        // If no salutation was passed from the PayPal API use the fallback
+        if (empty($userData['oxsal'])) {
+            $userData['oxsal'] = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('sOEPayPalECheckoutFallbackSal');
+        }
+
         $userData['oxcompany'] = $payPalData->getBusiness();
 
         return $userData;
@@ -296,6 +322,23 @@ class User extends User_parent
         // setting data..
         $street = $this->splitShipToStreetPayPalUser($payPalData['SHIPTOSTREET']);
 
+        // If the street number could not be parsed from the ship to street, try to use ship to street 2
+        if (empty($street['streetnr'])) {
+            $result = [];
+            // If there is a number in ship to street 2 this might be the street number
+            preg_match('/([\\d]+[\\D])/', $payPalData['SHIPTOSTREET2'], $result);
+
+            if (count($result) > 0) {
+                $street['streetnr'] = $payPalData['SHIPTOSTREET2'];
+            } else {
+                /**
+                 * @var $exception \OxidEsales\Eshop\Core\Exception\StandardException
+                 */
+                $exception = oxNew(StandardException::class, 'OEPAYPAL_ERROR_USER_ADDRESS');
+                throw $exception;
+            }
+        }
+
         // setting object id as it is requested later while processing user object
         $this->setId(\OxidEsales\Eshop\Core\UtilsObject::getInstance()->generateUID());
 
@@ -305,15 +348,23 @@ class User extends User_parent
         $this->oxuser__oxzip = new \OxidEsales\Eshop\Core\Field($payPalData['SHIPTOZIP']);
 
         $country = oxNew(\OxidEsales\Eshop\Application\Model\Country::class);
-        $countryId = $country->getIdByCode($payPalData["SHIPTOCOUNTRY"]);
+        $countryId = $country->getIdByCode($payPalData['SHIPTOCOUNTRY']);
         $this->oxuser__oxcountryid = new \OxidEsales\Eshop\Core\Field($countryId);
 
         $stateId = '';
-        if (isset($payPalData["SHIPTOSTATE"])) {
+        if (isset($payPalData['SHIPTOSTATE'])) {
             $state = oxNew(\OxidEsales\Eshop\Application\Model\State::class);
-            $stateId = $state->getIdByCode($payPalData["SHIPTOSTATE"], $countryId);
+            $stateId = $state->getIdByCode($payPalData['SHIPTOSTATE'], $countryId);
         }
         $this->oxuser__oxstateid = new \OxidEsales\Eshop\Core\Field($stateId);
+
+        $this->oxuser__oxsal = new \OxidEsales\Eshop\Core\Field($payPalData['SALUTATION']);
+        if (empty($this->oxuser__oxsal->rawValue)) {
+            // If no salutation was passed from the PayPal API use the fallback
+            $this->oxuser__oxsal = new \OxidEsales\Eshop\Core\Field(
+                \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('sOEPayPalECheckoutFallbackSal')
+            );
+        }
     }
 
     /**
@@ -324,6 +375,6 @@ class User extends User_parent
     protected function getShopIdQueryPart()
     {
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
-        return  " AND `oxshopid` = " . $db->quote(\OxidEsales\Eshop\Core\Registry::getConfig()->getShopId());
+        return ' AND `oxshopid` = ' . $db->quote(\OxidEsales\Eshop\Core\Registry::getConfig()->getShopId());
     }
 }

@@ -97,6 +97,7 @@ $aModule = array(
         array('group' => 'oepaypal_checkout', 'name' => 'blOEPayPalExpressCheckout',       'type' => 'bool',   'value' => 'true'),
         array('group' => 'oepaypal_checkout', 'name' => 'blOEPayPalECheckoutInMiniBasket', 'type' => 'bool',   'value' => 'true'),
         array('group' => 'oepaypal_checkout', 'name' => 'blOEPayPalECheckoutInDetails',    'type' => 'bool',   'value' => 'true'),
+        array('group' => 'oepaypal_checkout', 'name' => 'sOEPayPalECheckoutFallbackSal',   'type' => 'select', 'constraints' => 'MR|MRS', 'value' => 'MR'),
         array('group' => 'oepaypal_checkout', 'name' => 'blOEPayPalFinalizeOrderOnPayPal', 'type' => 'bool',   'value' => 'true'),
 
         array('group' => 'oepaypal_display', 'name' => 'sOEPayPalBrandName',                     'type' => 'str',  'value' => 'PayPal Testshop'),
